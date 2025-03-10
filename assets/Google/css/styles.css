@@ -1,0 +1,82 @@
+a:hover {
+	text-decoration: underline;
+}
+
+a {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif, sans-serif;
+	text-decoration: none;
+}
+
+div {
+	padding: 10px;
+}
+
+nav {
+	text-align: right;
+}
+
+#search {
+	text-align: center;
+}
+
+h3 {
+	color: red;
+}
+
+hr {
+	border-top: 1px;
+	margin: 20px -20px 20px;
+}
+
+h4, h3 {
+	margin: 30px;
+}
+
+#advanced table{
+	margin: 50px;
+}
+
+#advanced td{
+	padding: 10px;
+}
+
+#advanced td input{
+	min-width: 380px;
+}
+
+
+
+.rounded {
+	border: 1px solid #ccc;
+	border-radius: 24px;
+	width: 70%;
+	min-height: 20px;
+	max-width: 700px;
+	padding: 10px;
+	margin: center;
+}
+
+.submit {
+	margin-left: 502px;
+	color: white;
+	background-color: rgba(26, 132, 230, 0.722);
+	padding: 5px 10px;
+}
+
+.google_img {
+	margin-top: 150px;
+	max-width: 272px;
+	max-height: 92px;
+	object-position: center bottom;
+	object-fit: contain;
+	width: auto;
+}
+
+.rounded:hover {
+	box-shadow:0 1px 6px rgba(32,33,36,.28);
+}
+
+.rounded:focus {
+	outline: none;
+}
