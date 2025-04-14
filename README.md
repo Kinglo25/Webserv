@@ -1,4 +1,3 @@
-```markdown
 # Webserv
 
 _Webserv_ is a School 42 project designed to build a lightweight HTTP server from scratch. This project challenges you to implement low-level programming skills, socket programming, and adherence to web protocols by developing a functioning web server capable of handling HTTP requests and serving static content. The focus is on robustness, efficiency, and compliance with the HTTP/1.1 specification.
