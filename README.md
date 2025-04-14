@@ -1,128 +1,180 @@
-Project WebServ - 42 School
-The WebServ project is an advanced exercise in network programming and HTTP protocol implementation at 42 School. Students build a lightweight, multi-threaded HTTP server from scratch in C++, capable of handling client requests, serving static/dynamic content, and parsing configuration files. This project teaches socket programming, concurrency, protocol standards, and server architecture, mirroring the functionality of real-world web servers like Nginx or Apache.
-Core Objective
+---
 
-Create a customizable HTTP/1.1-compliant server that can process requests, serve files, and manage multiple client connections simultaneously. The server must adhere to RFC standards, parse configuration files, and handle errors gracefully while avoiding crashes or memory leaks.
-Key Requirements
+```markdown
+# Webserv
 
-    Configuration File Parsing:
+_Webserv_ is a School 42 project designed to build a lightweight HTTP server from scratch. This project challenges you to implement low-level programming skills, socket programming, and adherence to web protocols by developing a functioning web server capable of handling HTTP requests and serving static content. The focus is on robustness, efficiency, and compliance with the HTTP/1.1 specification.
 
-        Read a .conf file defining:
+---
 
-            Server blocks with IP/port bindings.
+## Table of Contents
 
-            Routes (locations) with root directories, index files, allowed methods, and error pages.
+- [Introduction](#introduction)
+- [Project Description](#project-description)
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [Author](#author)
+- [License](#license)
 
-            Client limits (e.g., max body size).
+---
 
-            Server names (virtual hosts).
+## Introduction
 
-        Validate syntax (e.g., no duplicate ports, valid paths).
+The _Webserv_ project involves creating a minimal yet fully functional web server using C/C++. You will work directly with sockets, file I/O, and the HTTP protocol to create a server that can communicate with web browsers and serve static files. This project is ideal for gaining hands-on experience with network programming and understanding the mechanics behind web communications.
 
-    HTTP Protocol Support:
+---
 
-        Handle core methods: GET, POST, DELETE.
+## Project Description
 
-        Manage headers (e.g., Content-Type, Content-Length, Host).
+The goal of _Webserv_ is to build an HTTP server that:
+- Listens on one or more ports for incoming HTTP requests.
+- Parses request headers and determines the appropriate response.
+- Serves static files (HTML, CSS, JavaScript, images, etc.).
+- Handles multiple HTTP methods such as GET, POST, and DELETE.
+- Returns correct HTTP status codes (e.g., 200, 404, 500) based on the request outcome.
+- Optionally supports CGI scripts for dynamic content generation.
 
-        Support chunked transfer encoding (bonus).
+Each component of the server is modularized to encapsulate different functionalities, such as socket management, request parsing, and response handling.
 
-        Return appropriate status codes (e.g., 200 OK, 404 Not Found, 413 Payload Too Large).
+---
 
-    Static File Serving:
+## Features
 
-        Serve files (HTML, images, CSS) from specified directories.
+- **Minimalist HTTP Server:** Directly handles socket communications with a lean implementation.
+- **HTTP/1.1 Compliance:** Supports the essential features of HTTP/1.1, including methods and status codes.
+- **Static File Serving:** Capable of serving a variety of file types from a specified root directory.
+- **Error Handling:** Provides standard HTTP error responses (e.g., 404 Not Found and 500 Internal Server Error).
+- **Multi-Port Listening:** Can be configured to listen on multiple ports simultaneously.
+- **Optional CGI Support:** Extendable to support dynamic content through CGI.
 
-        Auto-generate directory listings if no index file exists (bonus).
+---
 
-        Handle MIME types (e.g., text/html, image/jpeg).
+## Prerequisites
 
-    Dynamic Content (Bonus):
+Before building and running the _Webserv_ project, ensure that you have the following installed:
+- A C/C++ compiler (e.g., `gcc` or `clang`)
+- [Make](https://www.gnu.org/software/make/) for build automation
+- A Unix/Linux development environment
+- Basic knowledge of socket programming and the HTTP protocol
 
-        Execute CGI scripts (e.g., Python, PHP) for routes configured with cgi_pass.
+---
 
-        Pass environment variables (e.g., PATH_INFO, QUERY_STRING) to CGI.
+## Installation
 
-    Concurrency:
+Follow these steps to build and run the project on your local machine:
 
-        Use multiplexing (select, poll, or epoll) or multi-threading to handle multiple clients.
+1. **Clone the Repository:**
 
-        Prevent race conditions with proper synchronization.
+   ```bash
+   git clone https://github.com/Kinglo25/webserv.git
+   cd webserv
+   ```
 
-    Error Handling:
+2. **Build the Project:**
 
-        Custom error pages for status codes (e.g., 404, 500).
+   Use the provided Makefile to clean and build the project. This will ensure that all previous build artifacts are removed:
 
-        Gracefully close connections on timeouts or invalid requests.
+   ```bash
+   make fclean
+   make
+   ```
 
-        Guard against buffer overflows, infinite loops, and memory leaks.
+   *Note: If your build system supports any cache-related options, make sure to utilize them as needed.*
 
-Technical Implementation
+3. **Verify the Build:**
 
-    Socket Programming:
+   Run the server binary to check that it starts correctly:
 
-        Create listening sockets with socket(), bind(), listen().
+   ```bash
+   ./webserv
+   ```
 
-        Accept incoming connections with accept() and manage client sockets.
+   You should see a message confirming that the server is now listening on the configured port(s).
 
-    Request Parsing:
+---
 
-        Parse HTTP request lines, headers, and bodies.
+## Configuration
 
-        Handle URL encoding/decoding and query strings.
+The server configuration is managed via a configuration file (e.g., `config.conf`) or command-line arguments. Typical settings include:
 
-        Enforce client body size limits.
+- **Port Number:** The port on which the server listens.
+- **Root Directory:** The directory from which static files are served.
+- **Error Pages:** Custom HTML pages to display for HTTP errors like 404 or 500.
+- **CGI Settings:** (Optional) Parameters for executing CGI scripts.
 
-    Response Generation:
+Example configuration (`config.conf`):
 
-        Construct HTTP responses with headers and payloads.
+```ini
+# Webserv configuration file
 
-        Use sendfile() for efficient file transfers (bonus).
+[Server]
+port = 8080
+root = ./www
 
-        Handle redirections (3xx status codes) and POST file uploads.
+[ErrorPages]
+404 = ./errors/404.html
+500 = ./errors/500.html
+```
 
-    Configuration Management:
+Make sure to adjust the configuration to match your environment and project needs.
 
-        Store server and route settings in data structures (e.g., std::map).
+---
 
-        Resolve virtual hosts by matching Host headers to server blocks.
+## Usage
 
-    Concurrency Model:
+After building and configuring the server, start it with the following command:
 
-        Approach 1: Single-threaded event loop with epoll/kqueue for async I/O.
+```bash
+./webserv config.conf
+```
 
-        Approach 2: Thread pool to parallelize request handling.
+- **Access the Server:** Open your web browser and navigate to `http://localhost:8080` (or the port specified in your configuration file).
+- **View Logs:** Monitor server logs in your terminal to see HTTP request details and debug information.
+- **Stop the Server:** Press `Ctrl + C` in the terminal where the server is running to stop it.
 
-    Logging:
+---
 
-        Log requests, errors, and server status to stdout or files.
+## Troubleshooting
 
-Bonus Extensions
+- **Compilation Errors:** Ensure that all required development tools are installed and that your environment meets the prerequisites.
+- **Server Not Listening:** Verify that the selected port is not being used by another application. Modify the configuration file if necessary.
+- **404 Errors:** Confirm that the root directory specified in the configuration file exists and contains the requested files.
+- **Permission Issues:** Make sure the server process has appropriate permissions to access the directories and files.
 
-Optional features to deepen complexity:
+For further assistance, consult the project documentation or reach out to your peers and instructors at School 42.
 
-    CGI Support: Execute scripts (e.g., Python, PHP) and return dynamic content.
+---
 
-    Session/Cookies: Track user sessions with cookies (e.g., login systems).
+## Contributing
 
-    Reverse Proxy: Forward requests to other servers.
+Contributions are welcome! To contribute:
+1. Fork the repository.
+2. Create a new branch (e.g., `git checkout -b feature/my-new-feature`).
+3. Make your changes, ensuring that you adhere to the coding standards.
+4. Commit your changes with meaningful messages.
+5. Push your branch and create a pull request.
 
-    HTTP/2 or WebSocket support.
+Your contributions will help improve the project and enhance the learning experience for everyone.
 
-    Load Balancing: Distribute traffic across multiple backend servers.
+---
 
-    SSL/TLS: Secure connections with HTTPS (using OpenSSL).
+## Author
 
-Learning Outcomes
+- **Your Name**  
+  [GitHub: Kinglo25](https://github.com/Kinglo25)
 
-    Network Programming: Mastery of sockets, TCP/IP, and I/O multiplexing.
+Developed as part of the School 42 curriculum.
 
-    HTTP Protocol: Deep understanding of RFC 7230/7231 standards.
+---
 
-    Concurrency: Thread/process management and synchronization.
+## License
 
-    Configuration Design: Parsing and applying server rules.
+Distributed under the MIT License. See the `LICENSE` file for details.
+```
 
-    Performance Optimization: Efficient resource handling for high traffic.
-
-WebServ is a cornerstone project for aspiring backend developers and DevOps engineers, bridging low-level systems programming with modern web standards. It demands meticulous attention to protocol details, scalability, and security, preparing students for real-world challenges in building robust, high-performance servers.
+---
